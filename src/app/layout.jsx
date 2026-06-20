@@ -1,4 +1,6 @@
 import { Poppins } from "next/font/google";
+import localFont from 'next/font/local'
+
 import "./globals.css";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
@@ -8,6 +10,12 @@ const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
 });
+
+export const fontBangla = localFont({
+  src: './../fonts/mayaboti-Italic.ttf',
+  variable: "--font-bangla",
+})
+
 
 export const metadata = {
   title: "Little Wonders",

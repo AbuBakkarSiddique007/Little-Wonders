@@ -3,7 +3,7 @@ const uri = process.env.MONGODB_URI
 const dbName = process.env.DB_NAME
 
 
-const collections = {
+export const collections = {
     PRODUCTS: "products"
 }
 
