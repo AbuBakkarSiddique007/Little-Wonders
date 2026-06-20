@@ -8,8 +8,6 @@ const ProductCard = ({ product }) => {
         ? product.price - (product.price * product.discount / 100)
         : product.price;
 
-    console.log("Product Id", product._id)
-
     return (
         <div className="card bg-base-100 shadow-sm hover:shadow-xl transition-shadow duration-300 border border-base-200 h-full">
             <figure className="relative h-56 w-full bg-white p-4 border-b border-base-200 overflow-hidden">
@@ -32,8 +30,8 @@ const ProductCard = ({ product }) => {
 
             <div className="card-body p-5 flex flex-col">
                 <h2 className="card-title text-[1rem] leading-snug line-clamp-2"
-                // href={`/products/${product._id}`}
-                title={product.bangla || product.title}>
+                    // href={`/products/${product._id}`}
+                    title={product.bangla || product.title}>
                     {product.bangla || product.title}
                 </h2>
 
@@ -48,9 +46,15 @@ const ProductCard = ({ product }) => {
                     <button className="btn btn-primary btn-sm flex-1">
                         <BsCartPlus className="text-lg" /> Add to Cart
                     </button>
-                    <Link href={`/products/${product._id}`} className="btn btn-outline btn-sm">
+
+
+                    <Link
+                        href={`/products/${product._id}`}
+                        className="btn btn-outline btn-sm">
                         Details
                     </Link>
+
+
                 </div>
             </div>
         </div>

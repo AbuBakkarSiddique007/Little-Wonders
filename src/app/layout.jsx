@@ -18,8 +18,35 @@ export const fontBangla = localFont({
 
 
 export const metadata = {
-  title: "Little Wonders",
-  description: "Best products for your little ones",
+  metadataBase: new URL('https://little-wonders-livid.vercel.app'),
+  title: {
+    default: "Little Wonders | Educational Toys for Kids",
+    template: "%s | Little Wonders"
+  },
+  description: "Discover the best educational toys and learning materials for your little ones at Little Wonders. Quality products for cognitive development and fun learning.",
+  keywords: ["toys", "educational toys", "kids", "learning", "Little Wonders", "buy toys Bangladesh"],
+  openGraph: {
+    title: "Little Wonders | Educational Toys for Kids",
+    description: "Discover the best educational toys and learning materials for your little ones at Little Wonders.",
+    url: "https://little-wonders-livid.vercel.app",
+    siteName: "Little Wonders",
+    images: [
+      {
+        url: "https://i.ibb.co.com/Vp2pxf9v/image.png",
+        width: 1200,
+        height: 630,
+        alt: "Little Wonders Home Page",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Little Wonders | Educational Toys for Kids",
+    description: "Discover the best educational toys and learning materials for your little ones at Little Wonders.",
+    images: ["https://i.ibb.co.com/Vp2pxf9v/image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -22,6 +22,49 @@ function StarRating({ rating }) {
 }
 
 
+export async function generateMetadata({ params }) {
+    const { id } = await params;
+    const { data: product, success } = await getSingleProduct(id);
+
+    if (!success || !product) {
+        return {
+            title: "Product Not Found",
+        };
+    }
+
+    const { title, bangla, description, image } = product;
+    const displayTitle = bangla || title;
+    
+    
+    const productImageUrl = image || "https://i.ibb.co.com/mCWKWx7C/image.png";
+
+    return {
+        title: displayTitle,
+        description: description?.substring(0, 160) || `Buy ${displayTitle} from Little Wonders.`,
+        openGraph: {
+            title: `${displayTitle} | Little Wonders`,
+            description: description?.substring(0, 160) || `Buy ${displayTitle} from Little Wonders.`,
+            url: `https://little-wonders-livid.vercel.app/products/${id}`,
+            images: [
+                {
+                    url: productImageUrl,
+                    width: 800,
+                    height: 800,
+                    alt: displayTitle,
+                },
+            ],
+            type: "article",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${displayTitle} | Little Wonders`,
+            description: description?.substring(0, 160) || `Buy ${displayTitle} from Little Wonders.`,
+            images: [productImageUrl],
+        },
+    };
+}
+
+
 export default async function SingleProduct({ params }) {
     const { id } = await params;
 
