@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsCartPlus } from "react-icons/bs";
+import AddToCartButton from '../button/AddToCartButton';
 
 const ProductCard = ({ product }) => {
 
@@ -43,9 +44,11 @@ const ProductCard = ({ product }) => {
                 </div>
 
                 <div className="card-actions justify-between items-center mt-4 w-full">
-                    <button className="btn btn-primary btn-sm flex-1">
+                    {/* <button className="btn btn-primary btn-sm flex-1">
                         <BsCartPlus className="text-lg" /> Add to Cart
-                    </button>
+                    </button> */}
+
+                    <AddToCartButton product={product} />
 
 
                     <Link

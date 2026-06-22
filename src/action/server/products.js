@@ -5,8 +5,11 @@ const getProducts = async () => {
     try {
         const products = await dbConnect(collections.PRODUCTS).find().toArray()
 
+        // Convert MongoDB ObjectIds to string to avoid Server-to-Client Component props warning
+        const plainProducts = JSON.parse(JSON.stringify(products));
+
         return {
-            data: products,
+            data: plainProducts,
             success: true
         };
         
@@ -42,8 +45,11 @@ const getSingleProduct = async (id) => {
             }
         }
 
+        // Convert MongoDB ObjectId to string to avoid Server-to-Client Component props warning
+        const plainProduct = JSON.parse(JSON.stringify(product));
+
         return {
-            data: product,
+            data: plainProduct,
             success: true
         }
     } catch (error) {

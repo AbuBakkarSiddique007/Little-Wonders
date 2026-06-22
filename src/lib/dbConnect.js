@@ -4,7 +4,8 @@ const dbName = process.env.DB_NAME
 
 
 export const collections = {
-    PRODUCTS: "products"
+    PRODUCTS: "products",
+    USERS: 'users'
 }
 
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getSingleProduct } from '@/action/server/products';
 import { BsCartPlus, BsStarFill, BsStarHalf, BsStar, BsShieldCheck, BsTruck, BsArrowLeft } from 'react-icons/bs';
 import { MdOutlineSell } from 'react-icons/md';
+import AddToCartButton from '@/components/button/AddToCartButton';
 
 
 function StarRating({ rating }) {
@@ -34,8 +35,8 @@ export async function generateMetadata({ params }) {
 
     const { title, bangla, description, image } = product;
     const displayTitle = bangla || title;
-    
-    
+
+
     const productImageUrl = image || "https://i.ibb.co.com/mCWKWx7C/image.png";
 
     return {
@@ -103,7 +104,7 @@ export default async function SingleProduct({ params }) {
                     <li><Link href="/">Home</Link></li>
 
                     <li><Link href="/products">Products</Link></li>
-                    
+
                     <li className="text-base-content font-medium">
                         <span className="line-clamp-1">{bangla || title}</span>
                     </li>
@@ -211,15 +212,21 @@ export default async function SingleProduct({ params }) {
                         </div>
                     )}
 
+
                     {/* CTA Buttons */}
                     <div className="flex gap-3 pt-2">
-                        <button className="btn btn-primary flex-1 rounded-full gap-2">
-                            <BsCartPlus className="text-lg" />
-                            Cart এ যোগ করুন
-                        </button>
-                        <button className="btn btn-outline flex-1 rounded-full">
+                        {/* <button className="btn btn-primary btn-sm flex-1">
+                            <BsCartPlus className="text-lg" /> Add to Cart
+                        </button> */}
+
+                        <AddToCartButton
+                        product= {product}
+                        
+                        ></AddToCartButton>
+
+                        {/* <button className="btn btn-outline flex-1 rounded-full">
                             এখনই কিনুন
-                        </button>
+                        </button> */}
                     </div>
 
                     {/* Delivery Note */}

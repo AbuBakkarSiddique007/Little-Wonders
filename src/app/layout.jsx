@@ -4,6 +4,8 @@ import localFont from 'next/font/local'
 import "./globals.css";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
+import { Toaster } from "react-hot-toast";
+import NextAuthProvider from "@/components/provider/NextAuthProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "400", "500", "600", "800"],
@@ -51,24 +53,28 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${poppins.className} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
 
-        <header className="py-2 md:w-11/12 mx-auto">
-          <Navbar></Navbar>
-        </header>
+    <NextAuthProvider>
+      <html lang="en" className={`${poppins.className} h-full antialiased`}>
+        <body className="min-h-full flex flex-col">
 
-        {/* Home Page Size: min-h[calc(100vh - sum_of_navbar_and_footer_height_of_all_screen)] */}
+          <header className="py-2 md:w-11/12 mx-auto">
+            <Navbar></Navbar>
+          </header>
 
-        <main className="py-2 md:w-11/12 mx-auto flex-1">
-          {children}
-        </main>
+          {/* Home Page Size: min-h[calc(100vh - sum_of_navbar_and_footer_height_of_all_screen)] */}
 
-        <footer className="py-2 md:w-11/12 mx-auto">
-          <Footer></Footer>
-        </footer>
+          <main className="py-2 md:w-11/12 mx-auto flex-1">
+            {children}
+          </main>
 
-      </body>
-    </html>
+          <footer className="py-2 md:w-11/12 mx-auto">
+            <Footer></Footer>
+          </footer>
+          <Toaster position="bottom-right" />
+
+        </body>
+      </html>
+    </NextAuthProvider>
   );
 }
