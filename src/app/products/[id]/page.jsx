@@ -74,6 +74,7 @@ export default async function SingleProduct({ params }) {
     if (!success || !product) notFound();
 
     const {
+        _id,
         bangla,
         title,
         discount,
@@ -220,8 +221,8 @@ export default async function SingleProduct({ params }) {
                         </button> */}
 
                         <AddToCartButton
-                        product= {product}
-                        
+                            product={{ ...product, _id: _id?.toString() }}
+
                         ></AddToCartButton>
 
                         {/* <button className="btn btn-outline flex-1 rounded-full">

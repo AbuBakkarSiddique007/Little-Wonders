@@ -21,9 +21,8 @@ const SocialButton = () => {
             }
             else {
                 toast.success("Login successful")
+                router.push(searchParams.get('callbackUrl') || "/")
             }
-
-
         } catch (error) {
             console.error("Social login failed:", error);
             toast.error("Failed to login")

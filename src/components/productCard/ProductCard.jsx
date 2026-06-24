@@ -4,10 +4,29 @@ import { BsCartPlus } from "react-icons/bs";
 import AddToCartButton from '../button/AddToCartButton';
 
 const ProductCard = ({ product }) => {
+    console.log("from product card", product)
 
-    const discountedPrice = product.discount
-        ? product.price - (product.price * product.discount / 100)
-        : product.price;
+    const {
+        _id,
+        title,
+        bangla,
+        image,
+        price,
+        discount,
+        sizes,
+        color,
+        description,
+        features,
+        qna,
+        reviews,
+        sold,
+        ratings,
+        info
+    } = product
+
+    const discountedPrice = discount
+        ? price - (price * discount / 100)
+        : price;
 
     return (
         <div className="card bg-base-100 shadow-sm hover:shadow-xl transition-shadow duration-300 border border-base-200 h-full">
@@ -48,7 +67,17 @@ const ProductCard = ({ product }) => {
                         <BsCartPlus className="text-lg" /> Add to Cart
                     </button> */}
 
-                    <AddToCartButton product={product} />
+                    {/* <AddToCartButton product={product} /> */}
+
+
+                    {/**
+                    ------------------
+                     Solve the Issue: 
+                     -----------------
+                     Only plain objects can be passed to Client Components from Server Components. Objects with toJSON methods are not supported. Convert it manually to a simple value before passing it to props.
+                     */}
+
+                    <AddToCartButton product={{ ...product, _id: _id?.toString() }} />
 
 
                     <Link

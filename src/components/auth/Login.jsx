@@ -39,7 +39,7 @@ export default function Login() {
       toast.error("Invalid email or password")
     } else {
       toast.success("Login successful")
-      router.push("/")
+      router.push(searchParams.get('callbackUrl') || "/")
     }
   }
 
