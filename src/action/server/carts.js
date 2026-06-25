@@ -1,8 +1,12 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { cache } from "react";
+
 const { authOptions } = require("@/lib/authOption");
 const { dbConnect, collections } = require("@/lib/dbConnect");
 const { getServerSession } = require("next-auth");
+const { ObjectId } = require("mongodb");
 
 
 const cartCollection = dbConnect(collections.CARTS)
@@ -66,6 +70,114 @@ const handleCart = async ({ product, inc = true }) => {
     }
 }
 
+
+
+// const getCart = async () => {
+//     try {
+//         const { user } = await getServerSession(authOptions)
+
+//         if (!user) {
+//             return {
+//                 success: false,
+//                 message: "User not found"
+//             }
+//         }
+
+//         const query = {
+//             email: user?.email
+//         }
+
+//         const result = await cartCollection.find(query).toArray()
+
+//         console.log("result : ", result);
+
+//         return {
+//             success: true,
+//             data: result
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//         return {
+//             success: false,
+//             message: "No cart data found"
+//         }
+//     }
+// }
+
+const getCart = cache(async () => {
+    try {
+        const { user } = await getServerSession(authOptions)
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found"
+            }
+        }
+
+        const query = {
+            email: user?.email
+        }
+
+        const result = await cartCollection.find(query).toArray()
+
+        console.log("result : ", result);
+
+        return {
+            success: true,
+            data: result
+        }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "No cart data found"
+        }
+    }
+})
+
+
+const deleteItemFromCart = async (id) => {
+    try {
+        const { user } = await getServerSession(authOptions)
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found"
+            }
+        }
+
+        const query = {
+            _id: new ObjectId(id)
+            // email: user?.email,
+        }
+
+        const result = await cartCollection.deleteOne(query)
+
+        console.log("result : ", result);
+
+        if (result.deletedCount === 1) {
+            revalidatePath("/cart")
+        }
+
+        return {
+            success: Boolean(result.deletedCount)
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "Failed to delete cart item"
+        }
+    }
+}
 export {
-    handleCart
+    handleCart,
+    getCart,
+    deleteItemFromCart
 }

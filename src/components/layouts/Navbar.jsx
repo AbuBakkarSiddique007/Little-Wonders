@@ -52,9 +52,12 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <BsCart3 className='text-primary mr-5' size={30} />
+                    <Link href={"/cart"} className="">
+                        <BsCart3 className='text-primary mr-5' size={30} />
+                    </Link>
 
-                   <AuthButton></AuthButton>
+
+                    <AuthButton></AuthButton>
                 </div>
             </div>
         </div>
