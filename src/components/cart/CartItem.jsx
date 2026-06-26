@@ -1,13 +1,18 @@
 "use client"
 
-import { RiDeleteBin2Fill } from "react-icons/ri";
-import Image from 'next/image';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import { deleteItemFromCart } from "@/action/server/carts";
+import { decreaseItemDB, deleteItemFromCart, increaseItemDB } from "@/action/server/carts";
+import Image from 'next/image';
+import { RiDeleteBin2Fill } from 'react-icons/ri';
+import { useState } from 'react';
 
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, removeItem, updateQuantity }) => {
+    const { _id, quantity, price, image, title } = item
+
+    const [loading, setLoading] = useState(false)
+
     const router = useRouter();
 
     const deleteCartProduct = async () => {
@@ -27,6 +32,8 @@ const CartItem = ({ item }) => {
                 console.log("response : ", response);
 
                 if (response.success) {
+                    await removeItem(item._id);
+
                     Swal.fire({
                         title: "Removed!",
                         text: "Item has been removed from your cart.",
@@ -48,6 +55,73 @@ const CartItem = ({ item }) => {
         });
     }
 
+    const onChangeQuantity = async (id, quantity) => {
+        try {
+            setLoading(true)    
+
+
+            const result = await increaseItemDB(id, quantity)
+            console.log("Result :", result);
+
+            if (result.success) {
+
+                await updateQuantity(id, quantity + 1)
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Item has been increased.",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                setLoading(false)   
+
+            } else {
+                Swal.fire({
+                    title: "Failed!",
+                    text: result.message || "Failed to increase item.",
+                    icon: "error"
+                });
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    const onDecrease = async () => {
+        try {
+            setLoading(true)
+
+            const result = await decreaseItemDB(_id, quantity)
+
+            if (result.success) {
+                await updateQuantity(_id, quantity - 1)
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Item has been decreased.",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                setLoading(false)
+            } else {
+                Swal.fire({
+                    title: "Failed!",
+                    text: result.message || "Failed to decrease item.",
+                    icon: "error"
+                });
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     return (
         <div className="flex flex-col sm:flex-row items-center gap-4 bg-base-100 p-4 rounded-2xl shadow-sm border border-base-200 transition-all hover:shadow-md">
@@ -55,8 +129,8 @@ const CartItem = ({ item }) => {
             <div className="avatar">
                 <div className="w-24 h-24 rounded-xl overflow-hidden bg-base-200 shrink-0 relative">
                     <Image
-                        src={item.image}
-                        alt={item.title}
+                        src={item?.image}
+                        alt={item?.title}
                         fill
                         className="object-cover"
                         sizes="96px" />
@@ -74,10 +148,20 @@ const CartItem = ({ item }) => {
             </div>
 
             <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-4 sm:mt-0">
+
                 <div className="join">
-                    <button className="join-item btn btn-sm bg-base-200 hover:bg-base-300 border-none">-</button>
+                    <button
+
+                        onClick={onDecrease}
+                        disabled={quantity <= 1}
+
+                        className="join-item btn btn-sm bg-base-200 hover:bg-base-300 border-none">-</button>
+
                     <span className="join-item btn btn-sm no-animation bg-base-100 w-12 border-none">{item.quantity}</span>
-                    <button className="join-item btn btn-sm bg-base-200 hover:bg-base-300 border-none">+</button>
+
+                    <button
+                        onClick={() => onChangeQuantity(item._id, item.quantity)}
+                        className="join-item btn btn-sm bg-base-200 hover:bg-base-300 border-none">+</button>
                 </div>
 
 
@@ -89,13 +173,13 @@ const CartItem = ({ item }) => {
 
                 <button
                     onClick={deleteCartProduct}
-
                     className="btn btn-square btn-ghost text-error hover:bg-error/20 btn-sm">
                     <RiDeleteBin2Fill className="text-3xl" />
                 </button>
             </div>
         </div>
     );
+
 };
 
 export default CartItem;

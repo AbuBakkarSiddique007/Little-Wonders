@@ -159,9 +159,9 @@ const deleteItemFromCart = async (id) => {
 
         console.log("result : ", result);
 
-        if (result.deletedCount === 1) {
-            revalidatePath("/cart")
-        }
+        // if (result.deletedCount === 1) {
+        //     revalidatePath("/cart")
+        // }
 
         return {
             success: Boolean(result.deletedCount)
@@ -176,8 +176,146 @@ const deleteItemFromCart = async (id) => {
         }
     }
 }
+
+
+
+const increaseItemDB = async (id, quantity) => {
+    try {
+        const { user } = await getServerSession(authOptions)
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found"
+            }
+        }
+
+        if (quantity >= 10) {
+            return {
+                success: false,
+                message: "You can only add 10 items in the cart"
+            }
+        }
+
+        const query = {
+            _id: new ObjectId(id)
+        }
+
+        console.log("query : ", query);
+
+        const updatedData = {
+            $inc: {
+                quantity: 1
+            }
+        }
+
+        const result = await cartCollection.updateOne(query, updatedData)
+
+        console.log("result : ", result);
+
+        return {
+            success: Boolean(result.modifiedCount)
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "Failed to increase cart item"
+        }
+    }
+}
+
+const decreaseItemDB = async (id, quantity) => {
+    try {
+        const { user } = await getServerSession(authOptions)
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found"
+            }
+        }
+
+        if (quantity <= 1) {
+            return {
+                success: false,
+                message: "Item quantity must be at least 1"
+            }
+        }
+
+        const query = {
+            _id: new ObjectId(id)
+        }
+
+        console.log("query : ", query);
+
+        const updatedData = {
+            $inc: {
+                quantity: -1
+            }
+        }
+
+        const result = await cartCollection.updateOne(query, updatedData)
+
+        console.log("result : ", result);
+
+        return {
+            success: Boolean(result.modifiedCount)
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "Failed to decrease cart item"
+        }
+    }
+}
+
+
+const clearCart = async () => {
+    try {
+        const { user } = await getServerSession(authOptions)
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found"
+            }
+        }
+
+        const query = {
+            email: user?.email
+        }
+
+        const result = await cartCollection.deleteMany(query)
+
+        console.log("result : ", result);
+        
+        revalidatePath("/cart")
+        revalidatePath("/checkout")
+
+        return {
+            success: Boolean(result.deletedCount)
+        }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: "Failed to clear cart"
+        }
+    }
+}
+
 export {
     handleCart,
     getCart,
-    deleteItemFromCart
+    deleteItemFromCart,
+    increaseItemDB,
+    decreaseItemDB,
+    clearCart
 }
