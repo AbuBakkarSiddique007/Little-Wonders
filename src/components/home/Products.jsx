@@ -1,8 +1,8 @@
 import ProductCard from '../productCard/ProductCard';
 import { getProducts } from '@/action/server/products';
+import Link from 'next/link';
 
-
-const Products = async () => {
+const Products = async ({ showAllButton = true }) => {
     const { data } = await getProducts()
 
     return (
@@ -15,15 +15,18 @@ const Products = async () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
                 {data.map((product) => (
                     <ProductCard key={product._id} product={product} />
                 ))}
             </div>
 
-            <div className="text-center mt-12">
-                <button className="btn btn-outline btn-wide rounded-full">View All Products</button>
-            </div>
+            {showAllButton && (
+                <div className="text-center mt-12">
+                    <Link href="/products" className="btn btn-outline btn-wide rounded-full">
+                        View All Products
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };

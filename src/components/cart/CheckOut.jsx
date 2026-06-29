@@ -41,6 +41,7 @@ const CheckOut = ({ cartItems = [] }) => {
                 text: "Your order has been placed successfully.",
                 icon: "success",
                 confirmButtonText: "OK"
+
             }).then(() => {
                 router.push("/")
             })

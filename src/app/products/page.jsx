@@ -27,7 +27,7 @@ export const metadata = {
 const ProductsPage = () => {
     return (
         <div>
-            <Products></Products>
+            <Products showAllButton={false}></Products>
         </div>
     );
 };

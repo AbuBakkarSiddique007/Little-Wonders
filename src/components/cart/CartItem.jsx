@@ -42,7 +42,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
                         showConfirmButton: false
                     });
 
-                    // router.refresh();
+                    router.refresh();
 
                 } else {
                     Swal.fire({
@@ -75,6 +75,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
                     showConfirmButton: false
                 });
 
+                router.refresh();
                 setLoading(false)   
 
             } else {
@@ -108,6 +109,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
                     showConfirmButton: false
                 });
 
+                router.refresh();
                 setLoading(false)
             } else {
                 Swal.fire({

@@ -27,9 +27,7 @@ const AddToCartButton = ({ product }) => {
         if (isLogin) {
             // alert(`Added ${product.bangla || product.title} to cart`)
 
-            const result = await handleCart({
-                product, inc: true
-            })
+            const result = await handleCart(product._id)
 
 
             if (result.success) {
@@ -40,6 +38,7 @@ const AddToCartButton = ({ product }) => {
                     timer: 2000,
                     showConfirmButton: false
                 });
+                router.refresh();
             }
             else {
                 Swal.fire({

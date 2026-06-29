@@ -4,7 +4,6 @@ import { BsCartPlus } from "react-icons/bs";
 import AddToCartButton from '../button/AddToCartButton';
 
 const ProductCard = ({ product }) => {
-    console.log("from product card", product)
 
     const {
         _id,

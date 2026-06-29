@@ -1,6 +1,8 @@
 "use server"
 
+import { sendEmail } from "@/lib/sendEmail";
 import { clearCart, getCart } from "./carts";
+import { orderInvoiceTemplate } from "@/lib/invoiceTemplate";
 
 const { authOptions } = require("@/lib/authOption");
 const { dbConnect, collections } = require("@/lib/dbConnect");
@@ -18,9 +20,21 @@ const createOrder = async (deliveryInfo) => {
 
         const cart = await getCart()
 
+        // const products = cart.data.map(item => ({
+        //     productId: item.productId,
+        //     title: item.title,
+        //     price: item.price,
+        //     quantity: item.quantity
+        // }))
+
+
+
+        const totalPrice = cart.data.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
         const newOrder = {
             ...deliveryInfo,
-            items: cart,
+            totalPrice,
+            items: cart.data,
             createdAt: new Date()
         }
 
@@ -29,6 +43,22 @@ const createOrder = async (deliveryInfo) => {
         if (Boolean(result.insertedId)) {
             await clearCart()
         }
+
+        // Send Invoice Email
+        try {
+            await sendEmail({
+                to: user.email,
+                subject: "Your Order Invoice - Little Wonders",
+                html: orderInvoiceTemplate({
+                    orderId: result.insertedId.toString(),
+                    items: cart.data,
+                    totalPrice,
+                }),
+            });
+        } catch (emailError) {
+            console.error("Nodemailer failed to send order invoice email:", emailError);
+        }
+
 
         if (result?.insertedId) {
             return {
@@ -46,9 +76,6 @@ const createOrder = async (deliveryInfo) => {
             message: "Something went wrong"
         }
     }
-
-
-
 }
 
 export {

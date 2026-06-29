@@ -11,10 +11,9 @@ const { ObjectId } = require("mongodb");
 
 const cartCollection = dbConnect(collections.CARTS)
 
-const handleCart = async ({ product, inc = true }) => {
+const handleCart = async (productId) => {
 
     const { user } = await getServerSession(authOptions)
-    console.log("user :  ", user);
 
     if (!user) {
         return {
@@ -24,24 +23,20 @@ const handleCart = async ({ product, inc = true }) => {
     }
 
     const query = {
-        email: user.email,
-        productId: product._id
+        email: user?.email,
+        productId: new ObjectId(productId)
     }
 
     const isAdded = await cartCollection.findOne(query)
 
-    console.log("isAdded : ", isAdded);
-
     if (isAdded) {
         const updatedData = {
             $inc: {
-                quantity: inc ? 1 : -1
+                quantity: 1
             }
         }
 
         const result = await cartCollection.updateOne(query, updatedData)
-
-        console.log("result : ", result);
 
         return {
             success: Boolean(result.modifiedCount)
@@ -49,6 +44,11 @@ const handleCart = async ({ product, inc = true }) => {
     }
 
     else {
+
+        const product = await dbConnect(collections.PRODUCTS).findOne({ _id: new ObjectId(productId) })
+
+
+
         const newData = {
             productId: product._id,
             email: user.email,
@@ -61,8 +61,6 @@ const handleCart = async ({ product, inc = true }) => {
         }
 
         const result = await cartCollection.insertOne(newData)
-
-        console.log("result : ", result);
 
         return {
             success: Boolean(result.acknowledged)
@@ -122,8 +120,6 @@ const getCart = cache(async () => {
 
         const result = await cartCollection.find(query).toArray()
 
-        console.log("result : ", result);
-
         return {
             success: true,
             data: result
@@ -151,13 +147,11 @@ const deleteItemFromCart = async (id) => {
         }
 
         const query = {
-            _id: new ObjectId(id)
-            // email: user?.email,
+            _id: new ObjectId(id),
+            email: user?.email,
         }
 
         const result = await cartCollection.deleteOne(query)
-
-        console.log("result : ", result);
 
         // if (result.deletedCount === 1) {
         //     revalidatePath("/cart")
@@ -198,10 +192,9 @@ const increaseItemDB = async (id, quantity) => {
         }
 
         const query = {
-            _id: new ObjectId(id)
+            _id: new ObjectId(id),
+            email: user?.email,
         }
-
-        console.log("query : ", query);
 
         const updatedData = {
             $inc: {
@@ -210,8 +203,6 @@ const increaseItemDB = async (id, quantity) => {
         }
 
         const result = await cartCollection.updateOne(query, updatedData)
-
-        console.log("result : ", result);
 
         return {
             success: Boolean(result.modifiedCount)
@@ -246,10 +237,9 @@ const decreaseItemDB = async (id, quantity) => {
         }
 
         const query = {
-            _id: new ObjectId(id)
+            _id: new ObjectId(id),
+            email: user?.email,
         }
-
-        console.log("query : ", query);
 
         const updatedData = {
             $inc: {
@@ -258,8 +248,6 @@ const decreaseItemDB = async (id, quantity) => {
         }
 
         const result = await cartCollection.updateOne(query, updatedData)
-
-        console.log("result : ", result);
 
         return {
             success: Boolean(result.modifiedCount)
@@ -293,8 +281,6 @@ const clearCart = async () => {
 
         const result = await cartCollection.deleteMany(query)
 
-        console.log("result : ", result);
-        
         revalidatePath("/cart")
         revalidatePath("/checkout")
 

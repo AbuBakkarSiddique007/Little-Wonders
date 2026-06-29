@@ -6,11 +6,11 @@ import ClientCart from "@/components/cart/ClientCart";
 
 const CartPage = async () => {
     const cartItems = await getCart();
-    console.log(cartItems);
 
     const formatCartData = cartItems?.data?.map(item => ({
         ...item,
-        _id: item._id.toString()
+        _id: item._id.toString(),
+        productId: item.productId?.toString()
     }))
 
 
